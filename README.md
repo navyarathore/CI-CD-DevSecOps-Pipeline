@@ -214,50 +214,148 @@ Ensure the Jenkins agent has:
 - `curl` installed for smoke tests
 - Sufficient permissions to run Node.js applications
 
-### Create a Jenkins pipeline job
+### Create a Jenkins Pipeline Job
 
-1. In Jenkins, click **New Item**.
-2. Enter a name, e.g., `ci-cd-devsecops-pipeline-demo`.
-3. Select **Pipeline** and click **OK**.
+1. In Jenkins, click **New Item**
+2. Enter a name, e.g., `task-manager-ci-cd-pipeline`
+3. Select **Pipeline** and click **OK**
 4. Under **Pipeline** section:
-	- Set **Definition** to **Pipeline script from SCM**.
-	- **SCM**: choose **Git**.
-	- **Repository URL**: use the HTTPS or SSH URL of this repository (e.g., `https://github.com/navyarathore/CI-CD-DevSecOps-Pipeline.git`).
-	- Branches to build: `*/main` (or whichever branch you want Jenkins to build).
-	- Script Path: `Jenkinsfile` (default).
-5. Click **Save**.
+   - **Definition**: Select **Pipeline script from SCM**
+   - **SCM**: Choose **Git**
+   - **Repository URL**: `https://github.com/navyarathore/CI-CD-DevSecOps-Pipeline.git`
+   - **Branches to build**: `*/main`
+   - **Script Path**: `Jenkinsfile`
+5. Click **Save**
 
-### Run the pipeline in Jenkins
+### Run the Pipeline
 
-1. Open the pipeline job page.
-2. Click **Build Now**.
-3. Watch the build in **Build History** and click the build number to see the console output.
+1. Open the pipeline job page
+2. Click **Build Now**
+3. Watch the build in **Build History**
+4. Click the build number to view:
+   - **Console Output** - Full build logs
+   - **Test Result** - JUnit test results
+   - **Code Coverage Report** - HTML coverage report
 
-You should see Jenkins executing the stages:
+### Expected Build Results
 
-- Checkout
-- Install dependencies (`npm install`)
-- Run tests (`npm test`)
-- Build / Package
-- Run app (smoke test)
+On successful build, you should see:
 
-If everything succeeds, the build result will be **SUCCESS** and the console output will include:
+- ✅ All stages completed successfully
+- ✅ Test results published (with pass/fail counts)
+- ✅ Code coverage report available
+- ✅ Email notification sent (if configured)
+- ✅ Smoke test passed with HTTP 200 response
 
-- `All tests passed` from the test script.
-- `Pipeline succeeded.` from the `post { success { ... } }` block.
+### Build Artifacts
 
-### Common troubleshooting tips
+Each build produces:
+- **junit.xml** - JUnit test results
+- **coverage/** - Code coverage reports in multiple formats
+- **Console logs** - Full execution logs
 
-- **NodeJS tool not found**
-  - Error like `No tools matched the pattern 'NodeJS'` means the NodeJS tool is not configured or the name doesn’t match.
-  - Fix: double-check **Manage Jenkins → Tools → NodeJS installations** and ensure the name is exactly `NodeJS`.
+## Troubleshooting
 
-- **npm install fails**
-  - Check that your Jenkins agent has internet access and proper proxy settings (if behind a corporate proxy).
+### NodeJS Tool Not Found
 
-- **Smoke test fails**
-  - The `Run app (smoke test)` stage uses:
-	 - `nohup npm start &` to start the server in the background.
-	 - `sleep 5` to give it time to boot.
-	 - `curl -f http://localhost:3000` to verify it responds.
-  - If it fails, check the console log to see if the server started correctly or if the port is blocked.
+**Error**: `No tools matched the pattern 'NodeJS'`
+
+**Solution**: Ensure the NodeJS tool is configured in Jenkins with the exact name `NodeJS`
+- Go to **Manage Jenkins → Tools → NodeJS installations**
+- Verify the name matches exactly
+
+### npm install Fails
+
+**Error**: Package installation errors
+
+**Solution**:
+- Check Jenkins agent has internet access
+- Configure proxy settings if behind corporate firewall
+- Verify npm registry is accessible
+
+### Tests Fail in Jenkins
+
+**Error**: Tests pass locally but fail in Jenkins
+
+**Solution**:
+- Check environment variables (NODE_ENV should be 'test')
+- Verify MongoDB Memory Server can run in Jenkins environment
+- Check console output for specific error messages
+
+### Smoke Test Fails
+
+**Error**: Smoke test returns non-200 status code
+
+**Solution**:
+- Ensure port 3000 is not already in use
+- Increase sleep time in Jenkinsfile if app takes longer to start
+- Check application logs in console output
+- Verify no MongoDB connection errors (app should skip DB in test mode)
+
+### Coverage Report Not Published
+
+**Error**: HTML Publisher plugin not working
+
+**Solution**:
+- Install HTML Publisher plugin
+- Check `coverage/lcov-report/index.html` exists after test run
+- Verify Jenkins has permission to read coverage directory
+
+### Email Notifications Not Sent
+
+**Error**: No emails received on build success/failure
+
+**Solution**:
+- Configure SMTP settings in Jenkins
+- Add recipient email addresses in Jenkinsfile
+- Test email configuration using Jenkins built-in test feature
+
+## Project Features
+
+### Technology Stack
+
+- **Backend Framework**: Express.js
+- **Database**: MongoDB with Mongoose ODM
+- **Testing Framework**: Jest
+- **HTTP Testing**: Supertest
+- **In-Memory DB**: MongoDB Memory Server
+- **CI/CD**: Jenkins
+- **Code Coverage**: Istanbul (via Jest)
+
+### DevSecOps Practices
+
+- ✅ Automated testing on every commit
+- ✅ Code coverage reporting and tracking
+- ✅ Continuous integration with Jenkins
+- ✅ Automated smoke testing
+- ✅ Email notifications for build status
+- ✅ JUnit test result reporting
+- ✅ Multiple coverage report formats for different tools
+
+### Testing Strategy
+
+- **Unit Tests**: Controller and model testing
+- **Integration Tests**: API route testing with Supertest
+- **Isolation**: MongoDB Memory Server for database isolation
+- **Coverage**: Comprehensive code coverage reporting
+- **CI Ready**: Tests run reliably in CI environment
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -am 'Add new feature'`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Submit a pull request
+
+## License
+
+This project is licensed under the ISC License.
+
+## Author
+
+Repository: [CI-CD-DevSecOps-Pipeline](https://github.com/navyarathore/CI-CD-DevSecOps-Pipeline)
+
+---
+
+**Happy Coding! 🚀**
