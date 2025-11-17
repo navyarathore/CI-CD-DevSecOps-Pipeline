@@ -18,9 +18,28 @@ pipeline {
 			}
 		}
 
-		stage('Run tests') {
+		stage('Run Jest Tests') {
 			steps {
-				sh 'npm test'
+				script {
+					echo 'Running Jest tests with coverage...'
+					sh 'npm run test:coverage -- --ci --reporters=default --reporters=jest-junit'
+				}
+			}
+			post {
+				always {
+					// Publish test results
+					junit allowEmptyResults: true, testResults: 'junit.xml'
+					
+					// Publish coverage report
+					publishHTML(target: [
+						allowMissing: true,
+						alwaysLinkToLastBuild: true,
+						keepAll: true,
+						reportDir: 'coverage/lcov-report',
+						reportFiles: 'index.html',
+						reportName: 'Code Coverage Report'
+					])
+				}
 			}
 		}
 

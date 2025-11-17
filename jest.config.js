@@ -19,5 +19,17 @@ module.exports = {
   verbose: true,
   clearMocks: true,
   resetMocks: true,
-  restoreMocks: true
+  restoreMocks: true,
+  reporters: [
+    'default',
+    ['jest-junit', {
+      outputDirectory: '.',
+      outputName: 'junit.xml',
+      classNameTemplate: '{classname}',
+      titleTemplate: '{title}',
+      ancestorSeparator: ' › ',
+      usePathForSuiteName: true
+    }]
+  ],
+  coverageReporters: ['text', 'lcov', 'html', 'cobertura']
 };
