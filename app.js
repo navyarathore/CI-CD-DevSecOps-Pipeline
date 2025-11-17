@@ -1,16 +1,22 @@
 const express = require('express');
+const connectDB = require('./config/db');
+const taskRoutes = require('./routes/taskRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
+// Middleware
+app.use(express.json());
+
+// Routes
 app.get('/', (req, res) => {
   res.json({ message: 'Hello from CI/CD DevSecOps demo app!' });
 });
 
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+app.use('/api/tasks', taskRoutes);
+
+// Don't connect to DB when testing
+if (process.env.NODE_ENV !== 'test') {
+  connectDB();
 }
 
 module.exports = app;
