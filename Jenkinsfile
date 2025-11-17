@@ -5,9 +5,6 @@ pipeline {
 		nodejs "NodeJS"
 	}
 
-	options {
-	}
-
 	stages {
 		stage('Checkout') {
 			steps {
