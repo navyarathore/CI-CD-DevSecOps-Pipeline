@@ -50,8 +50,7 @@ Job: ${env.JOB_NAME}
 Build Number: ${env.BUILD_NUMBER}
 Status: SUCCESS
 Build URL: ${env.BUILD_URL}
-""",
-				recipientProviders: [[$class: 'RequesterRecipientProvider'], [$class: 'DevelopersRecipientProvider']]
+"""
 			)
 		}
 
@@ -66,8 +65,7 @@ Build URL: ${env.BUILD_URL}
 
 Check console:
 ${env.BUILD_URL}console
-""",
-				recipientProviders: [[$class: 'RequesterRecipientProvider'], [$class: 'DevelopersRecipientProvider']]
+"""
 			)
 		}
 	}
