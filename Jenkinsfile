@@ -50,9 +50,7 @@ Job: ${env.JOB_NAME}
 Build Number: ${env.BUILD_NUMBER}
 Status: SUCCESS
 Build URL: ${env.BUILD_URL}
-""",
-				// Fallback so build still emails if Default Recipients are not picked up
-				recipientProviders: [[$class: 'RequesterRecipientProvider']]
+"""
 			)
 		}
 
@@ -67,8 +65,7 @@ Build URL: ${env.BUILD_URL}
 
 Check console:
 ${env.BUILD_URL}console
-""",
-				recipientProviders: [[$class: 'RequesterRecipientProvider']]
+"""
 			)
 		}
 	}
