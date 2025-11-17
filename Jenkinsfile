@@ -6,7 +6,6 @@ pipeline {
 	}
 
 	options {
-		timestamps()
 	}
 
 	stages {
@@ -43,13 +42,34 @@ pipeline {
 
 	post {
 		always {
-			echo 'Pipeline finished.'
+			echo "Pipeline finished with status: ${currentBuild.currentResult}"
 		}
+
 		success {
-			echo 'Pipeline succeeded.'
+			emailext(
+				subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+				body: """\
+Job: ${env.JOB_NAME}
+Build Number: ${env.BUILD_NUMBER}
+Status: SUCCESS
+Build URL: ${env.BUILD_URL}
+"""
+			)
 		}
+
 		failure {
-			echo 'Pipeline failed.'
+			emailext(
+				subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+				body: """\
+Job: ${env.JOB_NAME}
+Build Number: ${env.BUILD_NUMBER}
+Status: FAILURE
+Build URL: ${env.BUILD_URL}
+
+Check console output for details:
+${env.BUILD_URL}console
+"""
+			)
 		}
 	}
 }
