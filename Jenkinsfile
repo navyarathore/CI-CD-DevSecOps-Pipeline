@@ -5,6 +5,10 @@ pipeline {
 		nodejs "NodeJS" 
 	}
 
+	environment {
+		SONAR_SCANNER_HOME = tool name: 'SonarQube-Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+	}
+
 	stages {
 		stage('Checkout') {
 			steps {
@@ -50,6 +54,27 @@ pipeline {
 		stage('Run app (smoke test)') {
 			steps {
 				sh 'nohup npm start & sleep 5 && curl -f http://localhost:3000 || (echo "Smoke test failed" && exit 1)'
+			}
+		}
+
+		stage('SonarQube Analysis') {
+			steps {
+				withSonarQubeEnv('SonarQube-Server') {
+					sh """
+						${SONAR_SCANNER_HOME}/bin/sonar-scanner \
+						-Dsonar.projectKey=my-project-key \
+						-Dsonar.sources=src \
+						-Dsonar.host.url=http://localhost:9000
+					"""
+				}
+			}
+		}
+
+		stage('Quality Gate') {
+			steps {
+				timeout(time: 5, unit: 'MINUTES') {
+					waitForQualityGate abortPipeline: true
+				}
 			}
 		}
 	}

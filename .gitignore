@@ -5,3 +5,20 @@ coverage/
 *.log
 .DS_Store
 junit.xml
+
+# SonarQube
+.sonar/
+.scannerwork/
+sonar-project.properties.bak
+.sonarqube/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
