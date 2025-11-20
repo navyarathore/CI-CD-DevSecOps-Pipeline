@@ -27,10 +27,8 @@ pipeline {
 			}
 			post {
 				always {
-					// Publish test results
 					junit allowEmptyResults: true, testResults: 'junit.xml'
 					
-					// Publish coverage report
 					publishHTML(target: [
 						allowMissing: true,
 						alwaysLinkToLastBuild: true,
